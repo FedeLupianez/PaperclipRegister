@@ -48,8 +48,7 @@ def paste_selection(event=None) -> None:
         root.clipboard_append(selected_text)
         root.update()
     root.destroy()
-    # keyboard.write(selected_text)
-    keyboard.send('ctrl+v')
+    keyboard.write(selected_text)
 
 
 def update_labels() -> None:
@@ -57,11 +56,11 @@ def update_labels() -> None:
         widget.destroy()  # Limpiar los widgets anteriores
 
     for index, text in enumerate(before_copies):
-        label = tk.Label(root, text=text, justify='center', width=50, height=2)
+        label = tk.Label(root, text=text, justify='center', width=50, height=2, fg='white')
         if index == selection:
-            label.config(bg="#CCCCCC")
+            label.config(bg="#23272e")
         else:
-            label.config(bg="#FFFFFF")
+            label.config(bg="#333333")
         label.pack()
 
 
@@ -69,7 +68,8 @@ def show_before_copies() -> None:
     global root
     root = tk.Tk()
     root.title("Seleccionar texto copiado")
-    root.config(bg="#23272e")
+    root.config(bg="#23272e", takefocus=True)
+    root.attributes('-topmost', True)
 
     root.bind('<Up>', move_selection_up)
     root.bind('<Down>', move_selection_down)
