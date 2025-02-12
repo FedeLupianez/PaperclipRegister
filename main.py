@@ -19,38 +19,32 @@ config_dict: dict = {}
 
 def read_config_file():
     global config_file_path
-    global config_dict
-    file = open(config_file_path, 'r')
-    line = file.readline().strip()
-    count: int = 0
-
-    while (line):
-        key, value = line.split('=')
-        
-        if (count < 3):
-            value = int(value)
-
-        config_dict[key] = value
-        count += 1
-        line = file.readline().strip()
-    file.close()
-
-
-
-def create_config_file():
-    global config_file_path
-    if (os.path.exists(config_file_path)):
-        read_config_file()
-        return
     
-    with open(config_file_path, 'w') as file:
-        file.write(f'{max_copies_const}=5\n')
-        file.write(f'{label_width_const}=35\n')
-        file.write(f'{label_height_const}=2\n')
-        file.write(f'{label_selected_background}=#23272e\n')
-        file.write(f'{label_unselected_background}=#333333\n')
-        file.write(f'{keys_combo}=ctrl+alt+v\n')
-    file.close()
+    with open(config_file_path, 'r') as file:
+        for line in file:
+            yield (line.strip().split('='))
+    
+
+def append_config_dict() -> None:
+    for key, value in read_config_file():
+        config_dict[key] = value
+
+
+def create_config_file() -> None:
+    global config_file_path
+    
+    if (not os.path.exists(config_file_path)): # Por si el archivo de configuracion no está creado
+        with open(config_file_path, 'w') as file:
+            file.write(f'{max_copies_const}=5\n')
+            file.write(f'{label_width_const}=35\n')
+            file.write(f'{label_height_const}=2\n')
+            file.write(f'{label_selected_background}=#23272e\n')
+            file.write(f'{label_unselected_background}=#333333\n')
+            file.write(f'{keys_combo}=ctrl+alt+v\n')
+        file.close()
+        
+    append_config_dict()
+    return
 
 create_config_file()
 before_copies: list[str] = []
