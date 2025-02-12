@@ -5,7 +5,7 @@ import tkinter as tk
 import os
 
 user = os.path.expanduser('~')
-config_file_path = os.path.join(user, 'Desktop') + '/PortaRegistoConfig.txt'
+config_file_path = os.path.join(user, 'Documents') + '/PortaRegistoConfig.txt'
 
 max_copies_const: str = 'copias_maximas_guardadas'
 label_width_const: str = 'ancho_caja_texto'
@@ -17,9 +17,10 @@ keys_combo = 'combinacion_para_mostrar_panel(ej: ctrl+alt+v)'
 config_dict: dict = {}
 
 
-def read_config_file(config_path: str):
+def read_config_file():
+    global config_file_path
     global config_dict
-    file = open(config_path, 'r')
+    file = open(config_file_path, 'r')
     line = file.readline().strip()
     count: int = 0
 
@@ -62,7 +63,7 @@ def get_paperclip() -> None:
     content: str = pyperclip.paste()
 
     # Verificar si la lista ya está llena
-    if len(before_copies) == max_copies:
+    if (len(before_copies) == max_copies):
         before_copies.pop(0)
 
     before_copies.append(content)
@@ -86,7 +87,7 @@ def move_selection_down(event=None) -> None:
 
 # Función para pegar la selección actual
 def paste_selection(event=None) -> None:
-    if before_copies:
+    if (before_copies):
         selected_text = before_copies[selection]
         root.clipboard_clear()
         root.clipboard_append(selected_text)
@@ -112,15 +113,13 @@ def show_before_copies() -> None:
     root.title("Seleccionar texto copiado")
     root.config(bg="#23272e")
     root.attributes('-topmost', True)
-    root.focus_force()
-
+    update_labels()  # Actualizar las etiquetas al abrir la ventana
     root.bind('<Up>', move_selection_up)
     root.bind('<Down>', move_selection_down)
     root.bind('<Return>', paste_selection)
-
-    update_labels()  # Actualizar las etiquetas al abrir la ventana
+    
+    root.focus_get()
     root.mainloop()
-
 
 keyboard.add_hotkey("ctrl+c", get_paperclip)
 keyboard.add_hotkey(config_dict[keys_combo], show_before_copies)
